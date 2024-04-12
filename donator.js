@@ -76,6 +76,51 @@ app.get("/error", (req, res) => {
   res.sendFile(__dirname + "/User/error.html");
 });
 
+
+const registrationSchema = new mongoose.Schema({
+  name:String,
+  email:String,
+  phone:Number,
+  alt_phone:Number,
+  password:String,
+});
+
+const Registration = mongoose.model("Registration",registrationSchema);
+
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+
+
+// form submission record in the USER & ADMIN module.
+app.post("/register", async (req, res) => {
+    try {
+      const { name, email, phone, alt_phone, password } = req.body;
+      const registrationData = new Registration({
+        name,
+        email,
+        phone,
+        alt_phone,
+        password,
+      });
+      await registrationData.save();
+      res.redirect("/success");
+    } catch (error) {
+      console.log(error);
+      res.redirect("/error");
+    }
+  });
+
+app.get("/success", (req,res)=>{
+    res.sendFile(__dirname+"/User/success.html");
+})
+app.get("/error", (req,res)=>{
+    res.sendFile(__dirname+"/User/error.html");
+})
+
+app.get("/login", (req, res) => {
+  res.sendFile(__dirname + "/User/index.html");
+});
+
 app.listen(port,()=>{
     console.log(`server running ${port}`);
 })
