@@ -19,6 +19,11 @@ mongoose.connect(
   }
 );
 
+// home page 
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/home.html");
+});
+//donato server!!
 const donatorSchema = new mongoose.Schema({
   item_name: String,
   type: String,
@@ -30,9 +35,6 @@ const donatorSchema = new mongoose.Schema({
   pickup_add: String,
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/home.html");
-});
 
 const donator = mongoose.model("donator", donatorSchema);
 
@@ -65,7 +67,6 @@ app.post("/donator", async (req, res) => {
     res.redirect("/success");
   } catch (error) {
     console.log(error);
-    res.redirect("/error");
   }
 });
 
@@ -76,51 +77,165 @@ app.get("/error", (req, res) => {
   res.sendFile(__dirname + "/User/error.html");
 });
 
-
+// user server
 const registrationSchema = new mongoose.Schema({
-  name:String,
-  email:String,
-  phone:Number,
-  alt_phone:Number,
-  password:String,
+  name: String,
+  email: String,
+  phone: Number,
+  alt_phone: Number,
+  password: String,
 });
 
-const Registration = mongoose.model("Registration",registrationSchema);
+const Registration = mongoose.model("Registration", registrationSchema);
 
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 // form submission record in the USER & ADMIN module.
 app.post("/register", async (req, res) => {
-    try {
-      const { name, email, phone, alt_phone, password } = req.body;
+  try {
+    const { name, email, phone, password } = req.body;
+    const existingUser = await Registration.findOne({email: email});
+    if (!existingUser) {
       const registrationData = new Registration({
         name,
         email,
         phone,
-        alt_phone,
         password,
       });
       await registrationData.save();
-      res.redirect("/success");
-    } catch (error) {
-      console.log(error);
-      res.redirect("/error");
+      res.send("Hello! Click on Already Exist"); 
     }
-  });
+    else{
+      res.redirect("/fetch");
+    }
+  } catch (error) {
+    console.log(error);
+    res.redirect("/error");
+  }
+});
 
-app.get("/success", (req,res)=>{
-    res.sendFile(__dirname+"/User/success.html");
-})
-app.get("/error", (req,res)=>{
-    res.sendFile(__dirname+"/User/error.html");
+app.get("/fetch", async (req, res) => {
+  try {
+    // Fetch all documents from the Donator collection
+    const data = await donator.find({});
+
+    // Create an HTML table with the fetched data
+    const table = `
+      <table border = "2" style="background-color:#8a8aef;">
+        <thead>
+          <tr>
+            <th>Item Name</th>
+            <th>Type</th>
+            <th>Category</th>
+            <th>Quantity per Pack</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>District</th>
+            <th>Pickup Address</th>
+            <th colspan = "2">How's the food?</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${data
+            .map(
+              (item) => `
+            <tr>
+              <td>${item.item_name}</td>
+              <td>${item.type}</td>
+              <td>${item.category}</td>
+              <td>${item.qtypp}</td>
+              <td>${item.email}</td>
+              <td>${item.phone}</td>
+              <td>${item.district}</td>
+              <td>${item.pickup_add}</td>
+              <td><button >GOOD</button></td>
+              <td><button >BAD</button></td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    // Send the HTML table as the response
+    res.send(table);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+// // fetch the data from the database
+// app.get("/fetch", async (req, res) => {
+//   try {
+//     // Fetch all documents from the Donator collection
+//     const data = await Donator.find({});
+
+//     // Create an HTML table with the fetched data
+//     const table = `
+//       <table border = "2">
+//         <thead>
+//           <tr>
+//             <th>Item Name</th>
+//             <th>Type</th>
+//             <th>Category</th>
+//             <th>Quantity per Pack</th>
+//             <th>Email</th>
+//             <th>Phone</th>
+//             <th>District</th>
+//             <th>Pickup Address</th>
+//             <th colspan = "2">How's the food?</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           ${data
+//             .map(
+//               (item) => `
+//             <tr>
+//               <td>${item.item_name}</td>
+//               <td>${item.type}</td>
+//               <td>${item.category}</td>
+//               <td>${item.qtypp}</td>
+//               <td>${item.email}</td>
+//               <td>${item.phone}</td>
+//               <td>${item.district}</td>
+//               <td>${item.pickup_add}</td>
+//               <td><button >GOOD</button></td>
+//               <td><button >BAD</button></td>
+//             </tr>
+//           `
+//             )
+//             .join("")}
+//         </tbody>
+//       </table>
+//     `;
+
+//     // Send the HTML table as the response
+//     res.send(table);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
+
+// app.get("/existingUser", (req,res)=>{
+//     res.redirect("");
+// })
+
+app.get("/existAlready", (req,res)=>{
+    res.sendFile(__dirname+"/User/ExistAlready.html");
 })
 
+
+// user login combine!
 app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/User/index.html");
 });
 
-app.listen(port,()=>{
-    console.log(`server running ${port}`);
-})
+
+app.listen(port, () => {
+  console.log(`server running ${port}`);
+});
