@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expiry Tracker Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles1.css') }}">
+
+</head>
+<body>
+    <h1>Expiry Tracker Results</h1>
+    {% if history_data %}
+    <table border="2">
+        <thead>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Production Date</th>
+                <th>Expiration Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in history_data %}
+            <tr>
+                <td>{{ data[0] }}</td>
+                <td>{{ data[1] }}</td>
+                <td>{{ data[2] }}</td>
+                <td>{{ data[3] }}</td>
+                <td>{{ data[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>{{ error }}</p>
+    {% endif %}
+</body>
+</html>

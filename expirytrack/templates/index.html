@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expiry Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+<body>
+    <h1>Expiry Tracker</h1>
+    <form action="{{ url_for('process_csv') }}" method="post" enctype="multipart/form-data">
+        <label for="csv_file">Upload CSV file:</label>
+        <input type="file" id="csv_file" name="csv_file" accept=".csv" required><br><br>
+        <label for="production_date">Production Date:</label>
+        <input type="date" id="production_date" name="production_date" required><br><br>
+        <label for="days">Days until expiration:</label>
+        <input type="number" id="days" name="days" min="1" value="3" required><br><br>
+        <input type="submit" value="Process">
+    </form>
+</body>
+</html>
