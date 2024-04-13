@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Waste Reduction Chatbot</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+    }
+    .chat-container {
+        max-width: 500px;
+        margin: 20px auto;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        overflow: hidden;
+    }
+    .chat-header {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+    }
+    .chat-body {
+        padding: 20px;
+        height: 300px;
+        overflow-y: auto;
+    }
+    .chat-message {
+        margin-bottom: 10px;
+    }
+    .user-message {
+        background-color: #4CAF50;
+        color: #fff;
+        border-radius: 5px;
+        padding: 10px;
+        float: right;
+        clear: both;
+    }
+    .bot-message {
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        padding: 10px;
+        float: left;
+        clear: both;
+    }
+    .chat-input {
+        width: calc(100% - 40px);
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        margin: 0 20px;
+        font-size: 16px;
+    }
+    .send-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 50%;
+        background-color: #4CAF50;
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .send-btn:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div class="chat-container">
+    <div class="chat-header">Food Waste Reduction Chatbot</div>
+    <div class="chat-body" id="chat-body">
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <div class="chat-message">
+        <input type="text" id="user-input" class="chat-input" placeholder="Type your message...">
+        <button onclick="sendMessage()" class="send-btn">➤</button>
+    </div>
+</div>
+
+<script>
+    function sendMessage() {
+        var userInput = document.getElementById('user-input').value;
+        appendMessage('user', userInput);
+        // Send user input to backend for processing
+        // You can use AJAX or fetch to send the message to your server
+        // and receive a response from the chatbot
+        // For demonstration purposes, we'll just echo the message back
+        var botResponse = "I received: " + userInput;
+        appendMessage('bot', botResponse);
+        // Clear the input field
+        document.getElementById('user-input').value = '';
+    }
+
+    function appendMessage(sender, message) {
+        var chatBody = document.getElementById('chat-body');
+        var messageElem = document.createElement('div');
+        messageElem.className = sender + '-message';
+        messageElem.innerHTML = message;
+        chatBody.appendChild(messageElem);
+        // Scroll to the bottom of the chat body
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+</script>
+</body>
+</html>
