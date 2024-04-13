@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+// const { exec } = require("child_process");
 
 const app = express();
 app.use(express.static(__dirname));
@@ -122,42 +123,43 @@ app.get("/fetch", async (req, res) => {
 
     // Create an HTML table with the fetched data
     const table = `
-      <table border = "2" style="background-color:#8a8aef;">
-        <thead>
-          <tr>
-            <th>Item Name</th>
-            <th>Type</th>
-            <th>Category</th>
-            <th>Quantity per Pack</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>District</th>
-            <th>Pickup Address</th>
-            <th colspan = "2">How's the food?</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data
-            .map(
-              (item) => `
-            <tr>
-              <td>${item.item_name}</td>
-              <td>${item.type}</td>
-              <td>${item.category}</td>
-              <td>${item.qtypp}</td>
-              <td>${item.email}</td>
-              <td>${item.phone}</td>
-              <td>${item.district}</td>
-              <td>${item.pickup_add}</td>
-              <td><button >GOOD</button></td>
-              <td><button >BAD</button></td>
+    <table border="2" style="background-color:#8a8aef; width: 100%; border-collapse: collapse;">
+      <thead>
+        <tr style="background-color: #4d4dff; color: white;">
+          <th style="padding: 10px;">Item Name</th>
+          <th style="padding: 10px;">Type</th>
+          <th style="padding: 10px;">Category</th>
+          <th style="padding: 10px;">Quantity per Pack</th>
+          <th style="padding: 10px;">Email</th>
+          <th style="padding: 10px;">Phone</th>
+          <th style="padding: 10px;">District</th>
+          <th style="padding: 10px;">Pickup Address</th>
+          <th colspan="2" style="padding: 10px;">How's the food?</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data
+          .map(
+            (item, index) => `
+            <tr style="background-color: ${index % 2 === 0 ? '#f2f2f2' : 'white'};">
+              <td style="padding: 10px;">${item.item_name}</td>
+              <td style="padding: 10px;">${item.type}</td>
+              <td style="padding: 10px;">${item.category}</td>
+              <td style="padding: 10px;">${item.qtypp}</td>
+              <td style="padding: 10px;">${item.email}</td>
+              <td style="padding: 10px;">${item.phone}</td>
+              <td style="padding: 10px;">${item.district}</td>
+              <td style="padding: 10px;">${item.pickup_add}</td>
+              <td style="padding: 10px;"><button style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">GOOD</button></td>
+              <td style="padding: 10px;"><button style="background-color: #f44336; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;">BAD</button></td>
             </tr>
           `
-            )
-            .join("")}
-        </tbody>
-      </table>
-    `;
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
+  
 
     // Send the HTML table as the response
     res.send(table);
@@ -167,63 +169,22 @@ app.get("/fetch", async (req, res) => {
   }
 });
 
-// // fetch the data from the database
-// app.get("/fetch", async (req, res) => {
-//   try {
-//     // Fetch all documents from the Donator collection
-//     const data = await Donator.find({});
-
-//     // Create an HTML table with the fetched data
-//     const table = `
-//       <table border = "2">
-//         <thead>
-//           <tr>
-//             <th>Item Name</th>
-//             <th>Type</th>
-//             <th>Category</th>
-//             <th>Quantity per Pack</th>
-//             <th>Email</th>
-//             <th>Phone</th>
-//             <th>District</th>
-//             <th>Pickup Address</th>
-//             <th colspan = "2">How's the food?</th>
-//           </tr>
-//         </thead>
-//         <tbody>
-//           ${data
-//             .map(
-//               (item) => `
-//             <tr>
-//               <td>${item.item_name}</td>
-//               <td>${item.type}</td>
-//               <td>${item.category}</td>
-//               <td>${item.qtypp}</td>
-//               <td>${item.email}</td>
-//               <td>${item.phone}</td>
-//               <td>${item.district}</td>
-//               <td>${item.pickup_add}</td>
-//               <td><button >GOOD</button></td>
-//               <td><button >BAD</button></td>
-//             </tr>
-//           `
-//             )
-//             .join("")}
-//         </tbody>
-//       </table>
-//     `;
-
-//     // Send the HTML table as the response
-//     res.send(table);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("Internal Server Error");
-//   }
+// Define route to execute Python script
+// app.get("/execute-python", (req, res) => {
+//   // Execute Python script as a child process
+//   exec("python your_script.py arg1 arg2", (error, stdout, stderr) => {
+//     if (error) {
+//       console.error(`Error executing Python script: ${error.message}`);
+//       return res.status(500).send("Internal Server Error");
+//     }
+//     if (stderr) {
+//       console.error(`Python script error: ${stderr}`);
+//       return res.status(500).send("Internal Server Error");
+//     }
+//     // Send output of Python script as response
+//     res.send(stdout);
+//   });
 // });
-
-
-// app.get("/existingUser", (req,res)=>{
-//     res.redirect("");
-// })
 
 app.get("/existAlready", (req,res)=>{
     res.sendFile(__dirname+"/User/ExistAlready.html");
